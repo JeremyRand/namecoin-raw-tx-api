@@ -82,12 +82,10 @@ def verify_name_available(name):
         else:
             raise e
 
+# This would be replaced by whatever mechanism Namecoin-Qt uses to queue transactions in the wallet.
+# TODO: can we use nLockTime instead of "minBlockHeight"?
 def queue_transaction(min_input_confirmations, min_block_height, tx):
     print("Send the following transaction when all inputs have at least", min_input_confirmations, "confirmations, and the block height is at least", min_block_height, ":", tx)
-
-# list of {"minInputConfirmations": (number of confirmations all inputs must have), "minBlockHeight": (don't broadcast before this block height), "tx": "(hex formatted raw tx)"}
-# TODO: can we use nLockTime instead of "minBlockHeight"?
-txout_renewal_storage = []
 
 # rpc_user and rpc_password are set in the namecoin.conf file
 rpc_user = input("Enter RPC username: ")
@@ -248,6 +246,6 @@ wallet_lock()
 queue_transaction(12, 0, name_firstupdate_signed["hex"])
 
 # TODO: lock the inputs of all queued transactions.
-print("WARNING: You must use the 'lockunspent false' RPC call against ALL inputs used by queued transactions.  This must be done each time Namecoin Core boots, and also each time a new transaction is queued.  If you fail to do this, Namecoin Core is likely to try to double-spend some inputs, which will cause your queued transactions to get rejected by the network.")
+print("WARNING: You must use the 'lockunspent false' RPC call against ALL inputs used by queued transactions.  This must be done each time Namecoin Core boots, and also each time a new transaction is queued or broadcast from queue.  If you fail to do this, Namecoin Core is likely to try to double-spend some inputs, which will cause your queued transactions to get rejected by the network.")
 
 quit()
